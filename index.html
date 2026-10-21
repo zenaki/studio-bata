@@ -50,11 +50,13 @@ aside{background:var(--panel);border-right:1px solid var(--line);display:flex;fl
 .cats button{padding:4px 8px;font-size:12px}
 #q{font:14px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 10px;width:100%}
 .list{overflow:auto;flex:1;min-height:0;padding:8px}
-.part{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:10px;width:100%;text-align:left;
+.part{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:10px;width:100%;text-align:left;
   border:1px solid transparent;border-radius:6px;padding:6px 8px;margin-bottom:2px}
 .part:hover{background:var(--bg);border-color:var(--line)}
 .part.on{background:var(--bg);border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
-.part .fp{height:28px;display:flex;align-items:center;justify-content:center}
+.part .fp{height:48px;display:flex;align-items:center;justify-content:center}
+.part .th{width:48px;height:48px;background:url(thumbs.webp) no-repeat;background-size:576px auto;border-radius:6px}
+.part:hover .th,.part.on .th{background-color:var(--panel)}
 .part .nm,.part.on .nm{color:var(--ink);font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .part .dm{font:12px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
 .swatches{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}
@@ -425,7 +427,7 @@ function renderList(){
   }
   const L=parts.filter(p=>(cat==='all'||p.kind===cat)&&(!q||p.id.replace(/-/g,' ').includes(q)||p.id.includes(q)));
   $('#list').innerHTML=L.map(p=>`<button class="part ${p.id===cur?'on':''}" data-id="${p.id}" title="${p.id}">
-    <span class="fp">${footprintSvg(p)}</span><span class="nm">${label(p)}</span><span class="dm">${p.w}×${p.d}</span></button>`).join('')
+    <span class="fp"><i class="th" style="background-position:-${(p.ti%12)*48}px -${Math.floor(p.ti/12)*48}px"></i></span><span class="nm">${label(p)}</span><span class="dm">${p.w}×${p.d}</span></button>`).join('')
     || '<p style="color:var(--muted);padding:8px">Tidak ada part yang cocok.</p>';
   $('#list').querySelectorAll('.part').forEach(b=>b.onclick=()=>choose(b.dataset.id));
 }
@@ -531,7 +533,7 @@ const SAMPLE={v:1,parts:[
 ]};
 (async()=>{
   parts=await (await fetch('parts.json')).json();
-  parts.forEach(p=>{ p.kind=p.id.startsWith('wedge')?'wedge':p.kind; byId[p.id]=p; });
+  parts.forEach((p,i)=>{ p.ti=i; p.kind=p.id.startsWith('wedge')?'wedge':p.kind; byId[p.id]=p; });
   parts.sort((a,b)=>{const x=sortKey(a),y=sortKey(b);return x[0]-y[0]||x[1]-y[1]||x[2].localeCompare(y[2]);});
   renderCats(); renderList(); count();
   let saved=null; if(!TPL[location.hash.slice(1)]) try{ saved=localStorage.getItem('studio-bata-v6'); }catch{}
