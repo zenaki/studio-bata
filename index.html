@@ -109,7 +109,7 @@ td:last-child{text-align:right;font-family:var(--mono)}
   </header>
   <aside>
     <div class="sec">
-      <span class="lbl">Part (108 STL + 32 aksesori)</span>
+      <span class="lbl">Part (108 STL + 49 aksesori)</span>
       <div class="cats" id="cats"></div>
       <input id="q" type="search" placeholder="Cari, mis. 2x4 atau slope">
     </div>
@@ -189,6 +189,18 @@ const TPL={
     ['lemari-perkakas',1,13,1,4,2,RED],['lemari-perkakas',5,13,1,4,2,RED],
     ['catok',2,13,7.3125,2,1,BLU],
     ['tile-1x4',2,10,1,4,1,RED],['tile-1x4',2,11,1,4,1,WH],['tile-1x4',8,10,1,4,1,RED],['tile-1x4',8,11,1,4,1,WH]]},
+  camping:{name:'Camping',desc:'Api unggun, tenda, marshmallow, anjing, sungai',parts:[
+    ['plate-16x16',0,0,0,16,16,'#237841'],['tile-6x6',5,6,1,6,6,'#7a4a2a'],
+    ['tenda',1,1,1,6,5,BLU],['tenda-ujung',1,1,1,6,5,'#fe8a18'],
+    ['lingkar-batu',6,7,2,4,4,GRY],['api-unggun',6,7,2,4,4,'#fe8a18'],
+    ['kayu-gelondong',6,12,1,4,1,BR],['orang-marshmallow',7,12,4.0625,2,1,YEL,2],
+    ['kursi-lipat',11,8,1,2,2,BLU,3],['orang-duduk-mug',11.5,8,3.9375,2,1,YEL,3],
+    ['batu-kecil',2,9,1,2,2,GRY],['orang-duduk-santai',2.5,9,3,2,1,YEL,1],['lentera',4,11,1,1,1,YEL],
+    ['orang-berdiri-santai',11,12,1,2,1,YEL,2],['anjing',9,14,1,2,1,'#c06a2b'],
+    ['kotak-pendingin',2,6,1,3,2,WH],['batu-kecil',12,10,1,2,2,GRY],['batu-besar',8,1,1,4,4,GRY],
+    ...[[12,1],[11,5],[0,13],[6,0],[0,7]].flatMap(([x,z])=>[['pohon-batang',x,z,1,2,2,BR],['pohon-daun',x,z,1,2,2,'#00852b']]),
+    ['tile-2x6',14,0,1,2,6,'#36aebf'],['tile-2x6',14,6,1,2,6,'#36aebf'],['tile-2x4',14,12,1,2,4,'#36aebf'],
+    ['plate-1x1',5,4,1,1,1,'#ff698f'],['plate-1x1',10,5,1,1,1,YEL],['plate-1x1',3,13,1,1,1,'#81007b'],['plate-1x1',13,8,1,1,1,RED]]},
   band:{name:'Studio band',desc:'Studio rekaman: band, bilik vokal, meja mixer',parts:[
     ['plate-16x16',0,0,0,16,16,DG],
     ['brick-1x16',0,0,1,16,1,TAN],['brick-1x16',0,0,4,16,1,ORG],['brick-1x16',0,0,7,16,1,GLASS],['brick-1x16',0,0,10,16,1,TAN],
@@ -528,7 +540,7 @@ $('#bStl').onclick=()=>{
 };
 
 // ---------- persistence ----------
-function save(){ try{ localStorage.setItem('studio-bata-v8',serialize()); }catch{} }
+function save(){ try{ localStorage.setItem('studio-bata-v9',serialize()); }catch{} }
 
 // ---------- loop ----------
 function resize(){ const r=cv.parentElement.getBoundingClientRect(); renderer.setSize(r.width,r.height,false); camera.aspect=r.width/r.height; camera.updateProjectionMatrix(); }
@@ -569,7 +581,7 @@ const SAMPLE={v:1,parts:[
   parts.forEach((p,i)=>{ p.ti=i; p.kind=p.id.startsWith('wedge')?'wedge':p.kind; byId[p.id]=p; });
   parts.sort((a,b)=>{const x=sortKey(a),y=sortKey(b);return x[0]-y[0]||x[1]-y[1]||x[2].localeCompare(y[2]);});
   renderCats(); renderList(); count();
-  let saved=null; if(!TPL[location.hash.slice(1)]) try{ saved=localStorage.getItem('studio-bata-v8'); }catch{}
+  let saved=null; if(!TPL[location.hash.slice(1)]) try{ saved=localStorage.getItem('studio-bata-v9'); }catch{}
   const demo=JSON.stringify({v:1,parts:tplRotated(TPL[location.hash.slice(1)]?location.hash.slice(1):'kantor',0).L.map(o=>({...o,x:o.x+16,z:o.z+16,y:+(o.y*PH).toFixed(2)}))});
   try{ await deserialize(saved && JSON.parse(saved).parts.length ? saved : demo); undo.length=0; }catch(e){ console.error(e); }
   cat='template'; renderCats(); chooseTpl('bengkel');
