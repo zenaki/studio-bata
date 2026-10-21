@@ -59,7 +59,7 @@ aside{background:var(--panel);border-right:1px solid var(--line);display:flex;fl
 .part:hover .th,.part.on .th{background-color:var(--panel)}
 .part .nm,.part.on .nm{color:var(--ink);font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .part .dm{font:12px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
-.swatches{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}
+.swatches{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .sw{aspect-ratio:1;border-radius:4px;border:2px solid transparent;padding:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
 .sw.on{border-color:var(--ink)}
 main{position:relative;min-width:0;min-height:0;background:var(--scene)}
@@ -94,9 +94,9 @@ td:last-child{text-align:right;font-family:var(--mono)}
   <header>
     <div class="logo"><i></i>Studio Bata</div>
     <div class="tools">
-      <button id="mPlace" class="on" title="Pasang (P)">＋ <span class="t">Pasang</span></button>
-      <button id="mSelect" title="Pilih (S)">◎ <span class="t">Pilih</span></button>
-      <button id="mErase" title="Hapus (E)">✕ <span class="t">Hapus</span></button>
+      <button id="mPlace" class="on" title="Pasang (1)">＋ <span class="t">Pasang</span></button>
+      <button id="mSelect" title="Pilih (2)">◎ <span class="t">Pilih</span></button>
+      <button id="mErase" title="Hapus (3)">✕ <span class="t">Hapus</span></button>
       <button id="bRot" title="Putar (R)">↻ <span class="t">Putar</span></button>
       <button id="bUndo" title="Undo (Ctrl+Z)">↶</button>
       <button id="bRedo" title="Redo (Ctrl+Y)">↷</button>
@@ -109,7 +109,7 @@ td:last-child{text-align:right;font-family:var(--mono)}
   </header>
   <aside>
     <div class="sec">
-      <span class="lbl">Part (108 STL + 15 aksesori)</span>
+      <span class="lbl">Part (108 STL + 32 aksesori)</span>
       <div class="cats" id="cats"></div>
       <input id="q" type="search" placeholder="Cari, mis. 2x4 atau slope">
     </div>
@@ -126,7 +126,7 @@ td:last-child{text-align:right;font-family:var(--mono)}
     <div class="hud">
       <div class="chip">Part <b id="cur">–</b></div>
       <div class="chip">Jumlah <b id="cnt">0</b></div>
-      <div class="chip help"><span><kbd>Klik</kbd> pasang</span><span><kbd>R</kbd> putar</span><span><kbd>Del</kbd> hapus</span><span><kbd>Seret</kbd> orbit</span><span><kbd>Klik kanan</kbd> geser</span></div>
+      <div class="chip help"><span><kbd>WASD</kbd> jalan</span><span><kbd>Q</kbd>/<kbd>E</kbd> turun/naik</span><span><kbd>Shift</kbd> cepat</span><span><kbd>Klik</kbd> pasang</span><span><kbd>R</kbd> putar</span><span><kbd>Del</kbd> hapus</span><span><kbd>Seret</kbd> orbit</span><span><kbd>Klik kanan</kbd> geser</span></div>
     </div>
   </main>
 </div>
@@ -140,9 +140,10 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 
 const P=8, PH=3.2, GRID=48;           // stud pitch mm, plate height mm, baseplate studs
 const COLORS=['#c91a09','#f2cd37','#0055bf','#237841','#fe8a18','#ffffff','#a0a5a9','#05131d',
-              '#582a12','#e4cd9e','#ff698f','#6c96bf','#9ba19d','#00852b','#81007b','#36aebf'];
+              '#582a12','#e4cd9e','#ff698f','#6c96bf','#9ba19d','#00852b','#81007b','#36aebf','#c06a2b','#b5532d','#6b6e70','#8a3b12','#bfe3f5'];
 // ---------- templates: [partId, x, z, yPlates, W, D, color]  (W×D = footprint in studs; y in plate units of 3.2 mm)
 const BR='#582a12', TAN='#e4cd9e', BLK='#05131d', GRY='#a0a5a9', DG='#6b6e70', WH='#ffffff', GRN='#237841';
+const GLASS='#bfe3f5', ORG='#c06a2b', TC='#b5532d';
 const RED='#c91a09', BLU='#0055bf', GLS='#6c96bf', YEL='#f2cd37';
 const WALL=(c1,c2)=>[['brick-1x16',0,0,1,16,1,c1],['brick-1x16',0,0,4,16,1,c2],['brick-1x16',0,0,7,16,1,c1],['brick-1x16',0,0,10,16,1,c1]];
 const SIDE=(c1,c2)=>[['brick-1x12',0,1,1,1,12,c1],['brick-1x12',0,1,4,1,12,c2],['brick-1x12',0,1,7,1,12,c1],['brick-1x12',0,1,10,1,12,c1]];
@@ -174,19 +175,33 @@ const TPL={
     ['monitor',6,5,9,4,1,BLK],['keyboard',6,7,9,4,1,GRY],['mug',10,7,9,1,1,WH],['lampu-meja',10,5,9,1,1,BLK],
     ['kursi-kantor',7,9,1,1,1,BLK,2],['orang-mengetik',6.5,9,4.875,2,1,YEL,2],
     {t:'laci',x:12,z:6,y:1},{t:'tanaman',x:1,z:13,y:1},['brick-2x2',14,13,1,2,2,GRY],['brick-2x2',14,13,4,2,2,GRY],{t:'karpet',x:4,z:12,y:1}]},
-  bengkel:{name:'Bengkel mobil',desc:'Mekanik memperbaiki mesin mobil',parts:[
-    ['plate-16x16',0,0,0,16,16,DG],...WALL(WH,'#fe8a18'),...SIDE(WH,'#fe8a18'),
-    {t:'mobil',x:6,z:2,y:1},['orang-mekanik',7,11,1,2,1,BLU,2],
-    ['brick-2x4',11,1,1,4,2,RED],['brick-2x4',11,1,4,4,2,RED],['brick-2x4',11,1,7,4,2,RED],['tile-2x4',11,1,10,4,2,BLK],
-    ['brick-2x2',13,12,1,2,2,BLK],['brick-2x2',13,12,4,2,2,BLK],
-    ['brick-2x2',2,2,1,2,2,BLK],['brick-2x2',2,2,4,2,2,BLK],['brick-2x2',2,2,7,2,2,BLK],
-    ['brick-2x2',2,12,1,2,2,BLU],['brick-2x2',2,12,4,2,2,BLU],['brick-2x2',4,12,1,2,2,RED],['brick-2x2',4,12,4,2,2,RED]]},
-  band:{name:'Studio band',desc:'Gitaris dan drummer sedang manggung',parts:[
-    ['plate-16x16',0,0,0,16,16,BLK],...WALL('#582a12',BLK),['plate-8x16',0,1,1,16,8,'#582a12'],
-    ['drum-set',6,3,2,4,3,RED],['brick-1x2',7,2,2,2,1,BLK],['orang-drummer',7,2,5,2,1,YEL,0],
-    {t:'amp',x:1,z:2,y:2},{t:'amp',x:13,z:2,y:2},
-    ['orang-gitaris',3,10,1,2,1,YEL,0],['stand-mic',4,12,1,1,1,BLK],
-    ['brick-2x3',12,10,1,3,2,BLK],['brick-2x3',12,10,4,3,2,BLK],['tile-2x3',12,10,7,3,2,GRY],{t:'karpet',x:6,z:11,y:1}]},
+  bengkel:{name:'Bengkel mobil',desc:'Mobil di lift, mekanik bekerja, mobil kedua di jack stand',parts:[
+    ['plate-16x16',0,0,0,16,16,DG],
+    ['brick-1x10',0,0,1,10,1,ORG],['brick-1x10',0,0,4,10,1,TAN],['brick-1x10',0,0,7,10,1,GLASS],['brick-1x10',0,0,10,10,1,TAN],
+    ['pintu-rolling',10,0,1,6,1,GRY],
+    ['brick-1x12',0,1,1,1,12,ORG],['brick-1x12',0,1,4,1,12,TAN],['brick-1x12',0,1,7,1,12,ORG],['brick-1x12',0,1,10,1,12,TAN],
+    ['lift-mobil',2,5,1,8,2,GRY],['sasis-mobil-4x8',4,2,14.25,4,8,DG],['bodi-mobil',4,2,16.9375,4,8,BLU],
+    ['orang-mekanik-atas',5,6,1,2,1,YEL,0],['tile-2x2',5,9,1,2,2,BLK],
+    ['jack-stand',11,3,1,1,1,RED],['jack-stand',14,3,1,1,1,RED],['jack-stand',11,8,1,1,1,RED],['jack-stand',14,8,1,1,1,RED],
+    ['sasis-mobil-4x8',11,2,3.3125,4,8,DG],['bodi-mobil',11,2,6,4,8,TAN],
+    ['orang-mekanik-papan',12,11,1,2,1,YEL,0],['orang-bawa-ban',6,12,1,2,1,YEL,0],['ban-dipegang',6,12,1,2,1,BLK,0],
+    ['ban',2,1,1,2,2,BLK],['ban',2,1,2.625,2,2,BLK],['ban',2,1,4.25,2,2,BLK],['ban',1,4,1,2,2,BLK],['ban',1,4,2.625,2,2,BLK],
+    ['lemari-perkakas',1,13,1,4,2,RED],['lemari-perkakas',5,13,1,4,2,RED],
+    ['catok',2,13,7.3125,2,1,BLU],
+    ['tile-1x4',2,10,1,4,1,RED],['tile-1x4',2,11,1,4,1,WH],['tile-1x4',8,10,1,4,1,RED],['tile-1x4',8,11,1,4,1,WH]]},
+  band:{name:'Studio band',desc:'Studio rekaman: band, bilik vokal, meja mixer',parts:[
+    ['plate-16x16',0,0,0,16,16,DG],
+    ['brick-1x16',0,0,1,16,1,TAN],['brick-1x16',0,0,4,16,1,ORG],['brick-1x16',0,0,7,16,1,GLASS],['brick-1x16',0,0,10,16,1,TAN],
+    ['brick-1x12',0,1,1,1,12,TAN],['brick-1x12',0,1,4,1,12,ORG],['brick-1x12',0,1,7,1,12,TAN],['brick-1x12',0,1,10,1,12,TAN],
+    ['tile-6x6',1,1,1,6,6,TC],['tile-6x6',1,7,1,6,6,TC],['tile-3x6',7,1,1,3,6,TC],['tile-3x6',7,7,1,3,6,TC],
+    ['plate-6x6',1,1,2,6,6,GRY],['drum-set',2,3,3,4,3,WH],['brick-1x2',3,2,3,2,1,BLK],['orang-drummer',3,2,6,2,1,YEL,0],
+    {t:'amp',x:7,z:1,y:2},['keyboard-musik',7,4,2,4,1,BLK],['orang-keyboardis',8,3,2,2,1,YEL,0],
+    ['brick-2x3',1,9,2,2,3,BLK],['brick-2x3',1,9,5,2,3,BLK],['brick-2x3',1,9,8,2,3,BLK],
+    ['orang-gitaris',3,9,2,2,1,YEL,0],['gitar',3,9,2,2,1,RED,0],['stand-mic',4,11,2,1,1,BLK],
+    ['orang-gitaris',6,10,2,2,1,YEL,0],['gitar',6,10,2,2,1,'#8a3b12',0],
+    ...[1,4,7,10].flatMap(y=>{const c=(y===4||y===7)?GLASS:GRY; return [['brick-1x6',11,1,y,1,6,c],['brick-1x1',11,7,y,1,1,GRY],['brick-1x3',12,7,y,3,1,c],['brick-1x6',15,1,y,1,6,GRY],['brick-1x1',15,7,y,1,1,GRY]];}),
+    ['orang-penyanyi',12,3,1,2,1,YEL,0],['stand-mic',13,5,1,1,1,BLK],
+    ['mixer-konsol',10,11,1,6,3,DG],['speaker-monitor',10,11,5.25,2,2,BLK],['speaker-monitor',14,11,5.25,2,2,BLK],['kursi-kantor',12,14,1,1,1,BLK,2],['orang-mengetik',11.5,14,4.875,2,1,YEL,2]]},
 };
 function tplExpand(key,ox=0,oz=0,oy=0,out=[]){
   for(const e of (TPL[key]||SUB[key]).parts){
@@ -254,7 +269,7 @@ let ghost=null;
 const ghostMat=new THREE.MeshStandardMaterial({transparent:true,opacity:.5,depthWrite:false,flatShading:true});
 const selBox=new THREE.Box3Helper(new THREE.Box3(),0x2a6fdb); selBox.visible=false; scene.add(selBox);
 
-function mat(c){ return matCache[c]||(matCache[c]=new THREE.MeshStandardMaterial({color:c,roughness:.35,metalness:0,flatShading:true})); }
+function mat(c){ return matCache[c]||(matCache[c]= c==='#bfe3f5' ? new THREE.MeshStandardMaterial({color:c,roughness:.05,transparent:true,opacity:.32,depthWrite:false,flatShading:true}) : new THREE.MeshStandardMaterial({color:c,roughness:.35,metalness:0,flatShading:true})); }
 
 // ---------- part data ----------
 async function loadGeo(id){
@@ -395,8 +410,10 @@ addEventListener('keydown',e=>{
   const k=e.key.toLowerCase();
   if((e.ctrlKey||e.metaKey)&&k==='z'){ e.preventDefault(); e.shiftKey?doRedo():doUndo(); }
   else if((e.ctrlKey||e.metaKey)&&k==='y'){ e.preventDefault(); doRedo(); }
+  else if('wasdqe'.includes(k)&&k.length===1&&!e.ctrlKey&&!e.metaKey){ held.add(k); if(e.shiftKey) held.add('shift'); e.preventDefault(); }
+  else if(k==='shift') held.add('shift');
   else if(k==='r') rotate();
-  else if(k==='p') setMode('place'); else if(k==='s') setMode('select'); else if(k==='e') setMode('erase');
+  else if(k==='1') setMode('place'); else if(k==='2') setMode('select'); else if(k==='3') setMode('erase');
   else if((k==='delete'||k==='backspace')&&selected){ const o=selected; delObj(o); commit({t:'del',items:[o]}); }
   else if(k==='escape') setMode('select');
 });
@@ -511,12 +528,28 @@ $('#bStl').onclick=()=>{
 };
 
 // ---------- persistence ----------
-function save(){ try{ localStorage.setItem('studio-bata-v6',serialize()); }catch{} }
+function save(){ try{ localStorage.setItem('studio-bata-v8',serialize()); }catch{} }
 
 // ---------- loop ----------
 function resize(){ const r=cv.parentElement.getBoundingClientRect(); renderer.setSize(r.width,r.height,false); camera.aspect=r.width/r.height; camera.updateProjectionMatrix(); }
 new ResizeObserver(resize).observe(cv.parentElement);
-renderer.setAnimationLoop(()=>{ controls.update(); renderer.render(scene,camera); });
+const held=new Set(); let lastT=performance.now();
+const _f=new THREE.Vector3(), _r=new THREE.Vector3(), _m=new THREE.Vector3(), UP=new THREE.Vector3(0,1,0);
+function roam(dt){
+  if(!held.size) return;
+  camera.getWorldDirection(_f); _f.y=0; if(_f.lengthSq()<1e-6) _f.set(0,0,-1); _f.normalize();
+  _r.crossVectors(_f,UP).normalize(); _m.set(0,0,0);
+  if(held.has('w')) _m.add(_f); if(held.has('s')) _m.sub(_f);
+  if(held.has('d')) _m.add(_r); if(held.has('a')) _m.sub(_r);
+  if(held.has('e')) _m.y+=1; if(held.has('q')) _m.y-=1;
+  if(!_m.lengthSq()) return;
+  const sp=(held.has('shift')?360:130)*dt; _m.normalize().multiplyScalar(sp);
+  camera.position.add(_m); controls.target.add(_m);
+  if(controls.target.y<0){ camera.position.y-=controls.target.y; controls.target.y=0; }
+}
+addEventListener('keyup',e=>{ held.delete(e.key.toLowerCase()); if(e.key==='Shift') held.delete('shift'); });
+addEventListener('blur',()=>held.clear());
+renderer.setAnimationLoop(()=>{ const t=performance.now(); roam(Math.min(.05,(t-lastT)/1000)); lastT=t; controls.update(); renderer.render(scene,camera); });
 
 // ---------- boot ----------
 const SAMPLE={v:1,parts:[
@@ -536,7 +569,7 @@ const SAMPLE={v:1,parts:[
   parts.forEach((p,i)=>{ p.ti=i; p.kind=p.id.startsWith('wedge')?'wedge':p.kind; byId[p.id]=p; });
   parts.sort((a,b)=>{const x=sortKey(a),y=sortKey(b);return x[0]-y[0]||x[1]-y[1]||x[2].localeCompare(y[2]);});
   renderCats(); renderList(); count();
-  let saved=null; if(!TPL[location.hash.slice(1)]) try{ saved=localStorage.getItem('studio-bata-v6'); }catch{}
+  let saved=null; if(!TPL[location.hash.slice(1)]) try{ saved=localStorage.getItem('studio-bata-v8'); }catch{}
   const demo=JSON.stringify({v:1,parts:tplRotated(TPL[location.hash.slice(1)]?location.hash.slice(1):'kantor',0).L.map(o=>({...o,x:o.x+16,z:o.z+16,y:+(o.y*PH).toFixed(2)}))});
   try{ await deserialize(saved && JSON.parse(saved).parts.length ? saved : demo); undo.length=0; }catch(e){ console.error(e); }
   cat='template'; renderCats(); chooseTpl('bengkel');
