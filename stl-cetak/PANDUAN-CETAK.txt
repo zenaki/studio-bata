@@ -1,0 +1,32 @@
+PART LEGO-COMPATIBLE BARU — Studio Bata
+Satuan mm. Dirancang untuk nozzle 0,4 mm, layer 0,12–0,16 mm.
+
+TOLERANSI YANG DIPAKAI (sama dengan koleksi 100 brick Anda)
+- Kotak luar per stud : 7,8 mm (celah 0,1 mm per sisi)
+- Stud              : Ø4,90 × 1,70 mm
+- Tabung bawah 2x2+ : OD 6,40 / ID 4,80
+- Pin bawah 1xN     : Ø3,10
+- Lubang stud bulat : Ø5,00 (lubang FDM biasanya menyusut ±0,1)
+- Dinding           : 1,20 mm (= 3 perimeter nozzle 0,4)
+
+CETAK uji-toleransi.stl DULU (±10 menit)
+Berisi 3 varian, ditandai takik di sisi kiri:
+  1 takik = A: tabung 6,30 / pin 3,00 / lubang 4,90  (lebih longgar)
+  2 takik = B: tabung 6,40 / pin 3,10 / lubang 5,00  (dipakai di semua part)
+  3 takik = C: tabung 6,50 / pin 3,20 / lubang 5,10
+  Catatan: tabung/pin lebih besar = lebih kencang; lubang lebih besar = lebih longgar.
+Pasang ke brick asli/brick cetakan Anda. Pilih yang "klik" pas, lalu minta saya
+membuat ulang semua part dengan nilai itu.
+
+SETELAN SLICER
+- Perimeter 3, infill 20–30 %, tanpa "elephant foot" (aktifkan kompensasi 0,1–0,2 mm)
+- Kursi kantor   : support tree (dudukan & kaki menggantung)
+- Monitor        : support di bawah layar
+- Lampu meja     : support di bawah kap lampu
+- Tanaman        : support tree untuk daun; atau cetak lebih lambat
+- Keyboard, mug, pot : tanpa support
+
+CARA PASANG
+- Kursi, mug, lampu, tanaman: lubang bawah masuk ke 1 stud
+- Monitor & keyboard: dudukan/plate 1xN dengan pin, seperti plate biasa
+- Tanaman masuk ke stud tengah pot bulat 2x2
